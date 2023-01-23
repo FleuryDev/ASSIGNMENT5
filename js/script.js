@@ -15,7 +15,7 @@ var dc = {};
 
 var homeHtmlUrl = "snippets/home-snippet.html";
 var allCategoriesUrl =
-  "js/categories.json";
+  "https://coursera-jhu-default-rtdb.firebaseio.com/categories.json";
 var categoriesTitleHtml = "snippets/categories-title-snippet.html";
 var categoryHtml = "snippets/category-snippet.html";
 var menuItemsUrl =
@@ -82,9 +82,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 // On first load, show home view
 showLoading("#main-content");
 $ajaxUtils.sendGetRequest(
-  allCategoriesUrl, function(homeHtml){
-    document.querySelector('#main-content').innerHTML = homeHtml;
-  },true);
+  allCategoriesUrl ,buildAndShowHomeHTML ,true);
  // [...], // ***** <---- TODO: STEP 1: Substitute [...] ******
    // Explicitly setting the flag to get JSON from server processed into an object literal
 });
@@ -99,12 +97,13 @@ function buildAndShowHomeHTML (categories) {
   $ajaxUtils.sendGetRequest(
     homeHtmlUrl,
     function (homeHtml) {
-      $ajaxUtils.sendGetRequest(
-        categories, function(categories){
-          var homeHtmlToInsertIntoMainPage = chooseRandomCategory(categories);
-        insertHtml('#main-content', homeHtmlToInsertIntoMainPage);
-        }, false
-      );
+         
+          var chosenCategoryShortName = chooseRandomCategory(categories);
+          var bt = "'";
+          var content = bt + chosenCategoryShortName.short_name +bt;
+          var homeHtmlToInsertIntoMainPage = insertProperty(homeHtml, 'randomCategoryShortName', content);
+        insertHtml("#main-content",homeHtmlToInsertIntoMainPage);
+      
 
       
         
@@ -131,7 +130,7 @@ function buildAndShowHomeHTML (categories) {
       // TODO: STEP 4: Insert the produced HTML in STEP 3 into the main page
       // Use the existing insertHtml function for that purpose. Look through this code for an example
       // of how to do that.
-      // ....
+      // .... 
 
     },
     false); // False here because we are getting just regular HTML from the server, so no need to process JSON.
